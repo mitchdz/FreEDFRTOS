@@ -327,6 +327,10 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
     #if ( configUSE_POSIX_ERRNO == 1 )
         int iTaskErrno;
     #endif
+
+    #if ( configUSE_EDF_SCHEDULER == 1 )
+        uint32_t deadline;
+    #endif
 } tskTCB;
 
 /* The old tskTCB name is maintained above then typedefed to the new TCB_t name
@@ -825,6 +829,18 @@ static void prvInitialiseNewTask( TaskFunction_t pxTaskCode,
 {
     StackType_t * pxTopOfStack;
     UBaseType_t x;
+
+    #if ( configUSE_EDF_SCHEDULER == 1 )
+        if ( pvParameters == NULL )
+        {
+            pxNewTCB->deadline = (uint32_t) -1;
+        }
+        else 
+        {
+            pxNewTCB->deadline = *(uint32_t *)pvParameters;
+            // pvParameter = (char *) pvParameters + sizeof(uint32_t);
+        }
+    #endif
 
     #if ( portUSING_MPU_WRAPPERS == 1 )
         /* Should the task be created in privileged mode? */

@@ -896,6 +896,10 @@
     #define configSUPPORT_DYNAMIC_ALLOCATION    1
 #endif
 
+#ifndef configUSE_EDF_SCHEDULER
+    #define configUSE_EDF_SCHEDULER 0
+#endif
+
 #ifndef configSTACK_DEPTH_TYPE
 
 /* Defaults to uint16_t for backward compatibility, but can be overridden
