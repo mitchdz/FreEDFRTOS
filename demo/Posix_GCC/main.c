@@ -66,12 +66,14 @@
 #define    BLINKY_DEMO       0
 #define    FULL_DEMO         1
 
-#define mainSELECTED_APPLICATION BLINKY_DEMO
+//#define mainSELECTED_APPLICATION BLINKY_DEMO
+#define mainSELECTED_APPLICATION CRASHY_MC_SPLODY_DEMO
 
 /* This demo uses heap_3.c (the libc provided malloc() and free()). */
 
 /*-----------------------------------------------------------*/
 extern void main_blinky( void );
+extern void main_crashy_mc_splody_demo_demo( void );
 extern void main_full( void );
 extern void main_tcp_echo_client_tasks( void );
 static void traceOnEnter( void );
@@ -128,7 +130,11 @@ int main( void )
         console_print("Starting full demo\n");
         main_full();
     }
-    #else
+    #elif ( mainSELECTED_APPLICATION == CRASHY_MC_SPLODY_DEMO)
+    {
+        console_print("Starting crashy mc splody demo demo\n");
+        main_crashy_mc_splody_demo_demo();
+    }   #else
     {
         #error "The selected demo is not valid"
     }
