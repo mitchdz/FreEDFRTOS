@@ -27,6 +27,7 @@
 /* Standard includes. */
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
  * all the API functions to use the MPU wrappers.  That should only be done when
@@ -337,6 +338,122 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
 /* The old tskTCB name is maintained above then typedefed to the new TCB_t name
  * below to enable the use of older kernel aware debuggers. */
 typedef tskTCB TCB_t;
+
+
+#ifdef configUSE_EDF_SCHEULDER
+    #define configTCB_LIST_MAX 50
+    static TCB_t *TCB_list[configTCB_LIST_MAX] = {NULL};
+
+    // return earliest deadline task which has not ran yet
+    // if no task is ready, return NULL
+    TCB_t *tcbGetReadyTCB()
+    {
+        int earliest_deadline = INT_MAX;
+        TCB_t *currBest = NULL;
+        for (int i = 0; i < configTCB_LIST_MAX; i++) {
+            if ( TCB_list[i] != NULL) {
+                if ( ( eTaskGetState(TCB_list[i]) == tskREADY_CHAR ) \
+                       && (TCB_list[i]->deadline < earliest_deadline) ) {
+                    currBest = TCB_list[i];
+                    earliest_deadline
+                }
+            }
+        }
+
+        return currBest;
+    }
+
+
+
+    /* iterates through TCB_list, first empty slot is filled */
+    void vAddTCBToList(TCB_t *tcb)
+    {
+        for (int i = 0; i < configTCB_LIST_MAX; i++) {
+            if (TCB_list[i] == NULL) {
+                TCB_list[i] = tcb;
+                return;
+            }
+        }
+    }
+
+    void vRemoveTCBFromList(TCB_t *tcb)
+    {
+        /* checks for NULL pointer on input */
+        if (!tcb) return;
+
+        for (int i = 0; i < configTCB_LIST_MAX; i++) {
+            /* checking pointer values */
+            if (TCB_list[i] == tcb) {
+                /* vTaskDelete handles freeing data */
+                TCB_list[i] = NULL;
+                return;
+            }
+
+        }
+
+    }
+
+#endif
+
+
+//void vAddTCBToList(TCB_t *TCB, TCB_node* head)
+//{
+//    // Create a new node for TCB nodes
+//    TCB_node *newNode = (TCB_node *)malloc(sizeof(TCB_node));
+//    newNode->next = NULL;
+//    newNode->tcb = TCB;
+//
+//    // check that head is not NULL
+//    if (head == NULL) {
+//        head = newNode;
+//        return;
+//    }
+//
+//    // check to see if list is empty
+//    if (head->next == NULL) {
+//        head->next = newNode;
+//        return;
+//    }
+//
+//    // iterate to end of linked list
+//    while(head != NULL) {
+//        if (head->next == NULL) {
+//            head->next = newNode;
+//            return;
+//        }
+//        head = head->next;
+//    }
+//
+//    return;
+//}
+//
+//void vRemoveTaskFromList(TCB_t *TCB, TCB_node* head)
+//{
+//    //TODO
+//}
+//
+//
+//void vDeleteTCBList(TCB_node* head)
+//{
+//    if (head == NULL) return;
+//
+//    TCB_node *tmp;
+//
+//    while (head != NULL) {
+//        tmp = head;
+//        free(head);
+//
+//        if (tmp->next == NULL) {
+//            return;
+//        }
+//        else {
+//            head = tmp;
+//
+//        }
+//    }
+//}
+
+
 
 /*lint -save -e956 A manual analysis and inspection has been used to determine
  * which static variables must be declared volatile. */
@@ -734,6 +851,8 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
                             uint32_t udeadline,
                             TaskHandle_t * const pxCreatedTask)
     {
+        printf("new task with deadline of %d created\n", udeadline);
+
         TCB_t * pxNewTCB;
         BaseType_t xReturn;
 
@@ -815,6 +934,9 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
 
         /* set the TCB deadline */
         pxNewTCB->deadline = udeadline;
+
+
+
 
         return xReturn;
     }
@@ -1461,7 +1583,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
         {
             /* There are no other tasks, or all the other tasks are in
              * the suspended state - make this the current task. */
-            pxCurrentTCB = pxNewTCk
+            pxCurrentTCB = pxNewTCB;
 
             if( uxCurrentNumberOfTasks == ( UBaseType_t ) 1 )
             {
@@ -3409,16 +3531,48 @@ BaseType_t xTaskIncrementTick( void )
 //    uxTopReadyPriority = uxTopPriority;                                                   \
 //} /* taskSELECT_HIGHEST_PRIORITY_TASK */
 
-
-
-void vSetPriorityBasedOnDeadline()
+void vSetPriorityBasedOndeadline( )
 {
-    
+    printf("print from setPriorityBasedOnDeadline\n");
+    int minDeadline = INT_MAX;
+    int maxDeadline = INT_MIN;
+
+    TCB_t *tempTCB;
+
+    for ( int i = 0 ; i < configMAX_PRIORITIES ; i++ ) {
+        // check that pxReadtTasksLists is not NULL & condition
+        if ( pxReadyTasksLists[i].uxNumberOfItems > 0 ) {
+            // iterate through priority value queue
+            for ( int j = 0; j < pxReadyTasksLists[i].uxNumberOfItems ; j++ ) {
+                // store TCB for list item in temporary value
+                tempTCB = ( TCB_t * )pxReadyTasksLists[i].pxIndex[j].pvOwner;
+
+                printf("Deadline: %d\n", tempTCB->deadline);
+
+
+                // update max deadline
+                if ( tempTCB->deadline > maxDeadline )
+                    maxDeadline = tempTCB->deadline;
+
+                // update min deadline
+                if ( tempTCB->deadline < minDeadline )
+                    minDeadline = tempTCB->deadline;
+            }
+        }
+    }
+
+}
+
+void vSetEDFTaskWithDeadline()
+{
+    // get best task to run
+    TCB_t *task = tcbGetReadyTCB();
 
 
 
 
 }
+
 
 
 
@@ -3478,8 +3632,9 @@ void vTaskSwitchContext( void )
          * optimised asm code. */
 
         /* set priorities based on deadline */
+        vSetPriorityBasedOndeadline();
 
-        taskSELECT_HIGHEST_PRIORITY_TASK(); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+        //taskSELECT_HIGHEST_PRIORITY_TASK(); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
         traceTASK_SWITCHED_IN();
 
         /* After the new task is switched in, update the global errno. */

@@ -137,7 +137,8 @@ static TimerHandle_t xTimer = NULL;
 /*** SEE THE COMMENTS AT THE TOP OF THIS FILE ***/
 void main_crashy_mc_splody_demo_demo( void )
 {
-const TickType_t xTimerPeriod = mainTIMER_SEND_FREQUENCY_MS;
+    printf("If I don't see this, then I will cry.\n");
+    const TickType_t xTimerPeriod = mainTIMER_SEND_FREQUENCY_MS;
 
     /* Create the queue. */
     xQueue = xQueueCreate( mainQUEUE_LENGTH, sizeof( uint32_t ) );
@@ -146,6 +147,7 @@ const TickType_t xTimerPeriod = mainTIMER_SEND_FREQUENCY_MS;
     {
         /* Start the two tasks as described in the comments at the top of this
         file. */
+        printf("Creating first task from main...\n");
         xTaskCreateWithDeadline( prvQueueReceiveTask,           /* The function that implements the task. */
                     "Rx",                           /* The text name assigned to the task - for debug only as it is not used by the kernel. */
                     configMINIMAL_STACK_SIZE,       /* The size of the stack to allocate to the task. */
@@ -153,6 +155,7 @@ const TickType_t xTimerPeriod = mainTIMER_SEND_FREQUENCY_MS;
                     mainQUEUE_RECEIVE_TASK_PRIORITY,/* The priority assigned to the task. */
                     NULL );                         /* The task handle is not required, so NULL is passed. */
 
+        printf("Creating second task from main...\n");
         xTaskCreateWithDeadline( prvQueueSendTask, "TX", configMINIMAL_STACK_SIZE, (uint32_t) 4, mainQUEUE_SEND_TASK_PRIORITY, NULL );
 
         /* Create the software timer, but don't start it yet. */
