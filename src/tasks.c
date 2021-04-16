@@ -340,8 +340,15 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
 typedef tskTCB TCB_t;
 
 
-#ifdef configUSE_EDF_SCHEULDER
+/*lint -save -e956 A manual analysis and inspection has been used to determine
+ * which static variables must be declared volatile. */
+PRIVILEGED_DATA TCB_t * volatile pxCurrentTCB = NULL;
+
+
+#if ( configUSE_EDF_SCHEDULER == 1 )
     #define configTCB_LIST_MAX 50
+
+    // maintain a list of TCB's to loop through
     static TCB_t *TCB_list[configTCB_LIST_MAX] = {NULL};
 
     // return earliest deadline task which has not ran yet
@@ -354,8 +361,9 @@ typedef tskTCB TCB_t;
             if ( TCB_list[i] != NULL) {
                 if ( ( eTaskGetState(TCB_list[i]) == tskREADY_CHAR ) \
                        && (TCB_list[i]->deadline < earliest_deadline) ) {
+
                     currBest = TCB_list[i];
-                    earliest_deadline
+                    earliest_deadline = currBest->deadline;
                 }
             }
         }
@@ -363,10 +371,8 @@ typedef tskTCB TCB_t;
         return currBest;
     }
 
-
-
     /* iterates through TCB_list, first empty slot is filled */
-    void vAddTCBToList(TCB_t *tcb)
+    static void vAddTCBToList(TCB_t *tcb)
     {
         for (int i = 0; i < configTCB_LIST_MAX; i++) {
             if (TCB_list[i] == NULL) {
@@ -376,7 +382,7 @@ typedef tskTCB TCB_t;
         }
     }
 
-    void vRemoveTCBFromList(TCB_t *tcb)
+    static void vRemoveTCBFromList(TCB_t *tcb)
     {
         /* checks for NULL pointer on input */
         if (!tcb) return;
@@ -393,9 +399,17 @@ typedef tskTCB TCB_t;
 
     }
 
-#endif
+    // sets pxCurrentTCB to the task with lowest deadline
+    static void vSetEDFTaskWithDeadline()
+    {
+        // get best task to run
+        TCB_t *task = tcbGetReadyTCB();
 
+        // after retrieving pointer to TCB, set that to current task
+        pxCurrentTCB = task;
+    }
 
+#endif /* configUSE_EDF_SCHEDULER */
 //void vAddTCBToList(TCB_t *TCB, TCB_node* head)
 //{
 //    // Create a new node for TCB nodes
@@ -455,9 +469,6 @@ typedef tskTCB TCB_t;
 
 
 
-/*lint -save -e956 A manual analysis and inspection has been used to determine
- * which static variables must be declared volatile. */
-PRIVILEGED_DATA TCB_t * volatile pxCurrentTCB = NULL;
 
 /* Lists for ready and blocked tasks. --------------------
  * xDelayedTaskList1 and xDelayedTaskList2 could be move to function scople but
@@ -844,199 +855,6 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
 /*-----------------------------------------------------------*/
 
 # if ( configUSE_EDF_SCHEDULER == 1 )
-    BaseType_t xTaskCreateWithDeadline( TaskFunction_t pxTaskCode,
-                            const char * const pcName, /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
-                            const configSTACK_DEPTH_TYPE usStackDepth,
-                            void * const pvParameters,
-                            uint32_t udeadline,
-                            TaskHandle_t * const pxCreatedTask)
-    {
-        printf("new task with deadline of %d created\n", udeadline);
-
-        TCB_t * pxNewTCB;
-        BaseType_t xReturn;
-
-        /* If the stack grows down then allocate the stack then the TCB so the stack
-         * does not grow into the TCB.  Likewise if the stack grows up then allocate
-         * the TCB then the stack. */
-        #if ( portSTACK_GROWTH > 0 )
-            {
-                /* Allocate space for the TCB.  Where the memory comes from depends on
-                 * the implementation of the port malloc function and whether or not static
-                 * allocation is being used. */
-                pxNewTCB = ( TCB_t * ) pvPortMalloc( sizeof( TCB_t ) );
-
-                if( pxNewTCB != NULL )
-                {
-                    /* Allocate space for the stack used by the task being created.
-                     * The base of the stack memory stored in the TCB so the task can
-                     * be deleted later if required. */
-                    pxNewTCB->pxStack = ( StackType_t * ) pvPortMalloc( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
-
-                    if( pxNewTCB->pxStack == NULL )
-                    {
-                        /* Could not allocate the stack.  Delete the allocated TCB. */
-                        vPortFree( pxNewTCB );
-                        pxNewTCB = NULL;
-                    }
-                }
-            }
-        #else /* portSTACK_GROWTH */
-            {
-                StackType_t * pxStack;
-
-                /* Allocate space for the stack used by the task being created. */
-                pxStack = pvPortMalloc( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation is the stack. */
-
-                if( pxStack != NULL )
-                {
-                    /* Allocate space for the TCB. */
-                    pxNewTCB = ( TCB_t * ) pvPortMalloc( sizeof( TCB_t ) ); /*lint !e9087 !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack, and the first member of TCB_t is always a pointer to the task's stack. */
-
-                    if( pxNewTCB != NULL )
-                    {
-                        /* Store the stack location in the TCB. */
-                        pxNewTCB->pxStack = pxStack;
-                    }
-                    else
-                    {
-                        /* The stack cannot be used as the TCB was not created.  Free
-                         * it again. */
-                        vPortFree( pxStack );
-                    }
-                }
-                else
-                {
-                    pxNewTCB = NULL;
-                }
-            }
-        #endif /* portSTACK_GROWTH */
-
-        if( pxNewTCB != NULL )
-        {
-            #if ( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 ) /*lint !e9029 !e731 Macro has been consolidated for readability reasons. */
-                {
-                    /* Tasks can be created statically or dynamically, so note this
-                     * task was created dynamically in case it is later deleted. */
-                    pxNewTCB->ucStaticallyAllocated = tskDYNAMICALLY_ALLOCATED_STACK_AND_TCB;
-                }
-            #endif /* tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE */
-
-            prvInitialiseNewTask( pxTaskCode, pcName, ( uint32_t ) usStackDepth,
-                    pvParameters, udeadline, pxCreatedTask, pxNewTCB, NULL );
-            prvAddNewTaskToReadyList( pxNewTCB );
-            xReturn = pdPASS;
-        }
-        else
-        {
-            xReturn = errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY;
-        }
-
-        /* set the TCB deadline */
-        pxNewTCB->deadline = udeadline;
-
-
-
-
-        return xReturn;
-    }
-
-#endif /* configUSE_EDF_SCHEDULER == 1 */
-
-
-
-#if ( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
-
-    BaseType_t xTaskCreate( TaskFunction_t pxTaskCode,
-                            const char * const pcName, /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
-                            const configSTACK_DEPTH_TYPE usStackDepth,
-                            void * const pvParameters,
-                            UBaseType_t uxPriority,
-                            TaskHandle_t * const pxCreatedTask )
-    {
-        TCB_t * pxNewTCB;
-        BaseType_t xReturn;
-
-        /* If the stack grows down then allocate the stack then the TCB so the stack
-         * does not grow into the TCB.  Likewise if the stack grows up then allocate
-         * the TCB then the stack. */
-        #if ( portSTACK_GROWTH > 0 )
-            {
-                /* Allocate space for the TCB.  Where the memory comes from depends on
-                 * the implementation of the port malloc function and whether or not static
-                 * allocation is being used. */
-                pxNewTCB = ( TCB_t * ) pvPortMalloc( sizeof( TCB_t ) );
-
-                if( pxNewTCB != NULL )
-                {
-                    /* Allocate space for the stack used by the task being created.
-                     * The base of the stack memory stored in the TCB so the task can
-                     * be deleted later if required. */
-                    pxNewTCB->pxStack = ( StackType_t * ) pvPortMalloc( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
-
-                    if( pxNewTCB->pxStack == NULL )
-                    {
-                        /* Could not allocate the stack.  Delete the allocated TCB. */
-                        vPortFree( pxNewTCB );
-                        pxNewTCB = NULL;
-                    }
-                }
-            }
-        #else /* portSTACK_GROWTH */
-            {
-                StackType_t * pxStack;
-
-                /* Allocate space for the stack used by the task being created. */
-                pxStack = pvPortMalloc( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation is the stack. */
-
-                if( pxStack != NULL )
-                {
-                    /* Allocate space for the TCB. */
-                    pxNewTCB = ( TCB_t * ) pvPortMalloc( sizeof( TCB_t ) ); /*lint !e9087 !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack, and the first member of TCB_t is always a pointer to the task's stack. */
-
-                    if( pxNewTCB != NULL )
-                    {
-                        /* Store the stack location in the TCB. */
-                        pxNewTCB->pxStack = pxStack;
-                    }
-                    else
-                    {
-                        /* The stack cannot be used as the TCB was not created.  Free
-                         * it again. */
-                        vPortFree( pxStack );
-                    }
-                }
-                else
-                {
-                    pxNewTCB = NULL;
-                }
-            }
-        #endif /* portSTACK_GROWTH */
-
-        if( pxNewTCB != NULL )
-        {
-            #if ( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 ) /*lint !e9029 !e731 Macro has been consolidated for readability reasons. */
-                {
-                    /* Tasks can be created statically or dynamically, so note this
-                     * task was created dynamically in case it is later deleted. */
-                    pxNewTCB->ucStaticallyAllocated = tskDYNAMICALLY_ALLOCATED_STACK_AND_TCB;
-                }
-            #endif /* tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE */
-
-            prvInitialiseNewTask( pxTaskCode, pcName, ( uint32_t ) usStackDepth, pvParameters, uxPriority, pxCreatedTask, pxNewTCB, NULL );
-            prvAddNewTaskToReadyList( pxNewTCB );
-            xReturn = pdPASS;
-        }
-        else
-        {
-            xReturn = errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY;
-        }
-
-        return xReturn;
-    }
-
-#endif /* configSUPPORT_DYNAMIC_ALLOCATION */
-/*-----------------------------------------------------------*/
 
 static void prvInitialiseNewTaskWithDeadline( TaskFunction_t pxTaskCode,
                                   const char * const pcName, /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
@@ -1297,7 +1115,218 @@ static void prvInitialiseNewTaskWithDeadline( TaskFunction_t pxTaskCode,
     {
         mtCOVERAGE_TEST_MARKER();
     }
+
+
+    vAddTCBToList(pxNewTCB);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    BaseType_t xTaskCreateWithDeadline( TaskFunction_t pxTaskCode,
+                            const char * const pcName, /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+                            const configSTACK_DEPTH_TYPE usStackDepth,
+                            void * const pvParameters,
+                            uint32_t udeadline,
+                            TaskHandle_t * const pxCreatedTask)
+    {
+        printf("new task with deadline of %d created\n", udeadline);
+
+        TCB_t * pxNewTCB;
+        BaseType_t xReturn;
+
+        /* If the stack grows down then allocate the stack then the TCB so the stack
+         * does not grow into the TCB.  Likewise if the stack grows up then allocate
+         * the TCB then the stack. */
+        #if ( portSTACK_GROWTH > 0 )
+            {
+                /* Allocate space for the TCB.  Where the memory comes from depends on
+                 * the implementation of the port malloc function and whether or not static
+                 * allocation is being used. */
+                pxNewTCB = ( TCB_t * ) pvPortMalloc( sizeof( TCB_t ) );
+
+                if( pxNewTCB != NULL )
+                {
+                    /* Allocate space for the stack used by the task being created.
+                     * The base of the stack memory stored in the TCB so the task can
+                     * be deleted later if required. */
+                    pxNewTCB->pxStack = ( StackType_t * ) pvPortMalloc( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
+
+                    if( pxNewTCB->pxStack == NULL )
+                    {
+                        /* Could not allocate the stack.  Delete the allocated TCB. */
+                        vPortFree( pxNewTCB );
+                        pxNewTCB = NULL;
+                    }
+                }
+            }
+        #else /* portSTACK_GROWTH */
+            {
+                StackType_t * pxStack;
+
+                /* Allocate space for the stack used by the task being created. */
+                pxStack = pvPortMalloc( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation is the stack. */
+
+                if( pxStack != NULL )
+                {
+                    /* Allocate space for the TCB. */
+                    pxNewTCB = ( TCB_t * ) pvPortMalloc( sizeof( TCB_t ) ); /*lint !e9087 !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack, and the first member of TCB_t is always a pointer to the task's stack. */
+
+                    if( pxNewTCB != NULL )
+                    {
+                        /* Store the stack location in the TCB. */
+                        pxNewTCB->pxStack = pxStack;
+                    }
+                    else
+                    {
+                        /* The stack cannot be used as the TCB was not created.  Free
+                         * it again. */
+                        vPortFree( pxStack );
+                    }
+                }
+                else
+                {
+                    pxNewTCB = NULL;
+                }
+            }
+        #endif /* portSTACK_GROWTH */
+
+        if( pxNewTCB != NULL )
+        {
+            #if ( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 ) /*lint !e9029 !e731 Macro has been consolidated for readability reasons. */
+                {
+                    /* Tasks can be created statically or dynamically, so note this
+                     * task was created dynamically in case it is later deleted. */
+                    pxNewTCB->ucStaticallyAllocated = tskDYNAMICALLY_ALLOCATED_STACK_AND_TCB;
+                }
+            #endif /* tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE */
+
+            prvInitialiseNewTaskWithDeadline( pxTaskCode, pcName, ( uint32_t ) usStackDepth,
+                    pvParameters, udeadline, pxCreatedTask, pxNewTCB, NULL );
+            prvAddNewTaskToReadyList( pxNewTCB );
+            xReturn = pdPASS;
+        }
+        else
+        {
+            xReturn = errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY;
+        }
+
+        /* set the TCB deadline */
+        pxNewTCB->deadline = udeadline;
+
+        vAddTCBToList(pxNewTCB);
+
+        return xReturn;
+    }
+
+#endif /* configUSE_EDF_SCHEDULER == 1 */
+
+
+
+#if ( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
+
+    BaseType_t xTaskCreate( TaskFunction_t pxTaskCode,
+                            const char * const pcName, /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
+                            const configSTACK_DEPTH_TYPE usStackDepth,
+                            void * const pvParameters,
+                            UBaseType_t uxPriority,
+                            TaskHandle_t * const pxCreatedTask )
+    {
+        TCB_t * pxNewTCB;
+        BaseType_t xReturn;
+
+        /* If the stack grows down then allocate the stack then the TCB so the stack
+         * does not grow into the TCB.  Likewise if the stack grows up then allocate
+         * the TCB then the stack. */
+        #if ( portSTACK_GROWTH > 0 )
+            {
+                /* Allocate space for the TCB.  Where the memory comes from depends on
+                 * the implementation of the port malloc function and whether or not static
+                 * allocation is being used. */
+                pxNewTCB = ( TCB_t * ) pvPortMalloc( sizeof( TCB_t ) );
+
+                if( pxNewTCB != NULL )
+                {
+                    /* Allocate space for the stack used by the task being created.
+                     * The base of the stack memory stored in the TCB so the task can
+                     * be deleted later if required. */
+                    pxNewTCB->pxStack = ( StackType_t * ) pvPortMalloc( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
+
+                    if( pxNewTCB->pxStack == NULL )
+                    {
+                        /* Could not allocate the stack.  Delete the allocated TCB. */
+                        vPortFree( pxNewTCB );
+                        pxNewTCB = NULL;
+                    }
+                }
+            }
+        #else /* portSTACK_GROWTH */
+            {
+                StackType_t * pxStack;
+
+                /* Allocate space for the stack used by the task being created. */
+                pxStack = pvPortMalloc( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation is the stack. */
+
+                if( pxStack != NULL )
+                {
+                    /* Allocate space for the TCB. */
+                    pxNewTCB = ( TCB_t * ) pvPortMalloc( sizeof( TCB_t ) ); /*lint !e9087 !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack, and the first member of TCB_t is always a pointer to the task's stack. */
+
+                    if( pxNewTCB != NULL )
+                    {
+                        /* Store the stack location in the TCB. */
+                        pxNewTCB->pxStack = pxStack;
+                    }
+                    else
+                    {
+                        /* The stack cannot be used as the TCB was not created.  Free
+                         * it again. */
+                        vPortFree( pxStack );
+                    }
+                }
+                else
+                {
+                    pxNewTCB = NULL;
+                }
+            }
+        #endif /* portSTACK_GROWTH */
+
+        if( pxNewTCB != NULL )
+        {
+            #if ( tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE != 0 ) /*lint !e9029 !e731 Macro has been consolidated for readability reasons. */
+                {
+                    /* Tasks can be created statically or dynamically, so note this
+                     * task was created dynamically in case it is later deleted. */
+                    pxNewTCB->ucStaticallyAllocated = tskDYNAMICALLY_ALLOCATED_STACK_AND_TCB;
+                }
+            #endif /* tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE */
+
+            prvInitialiseNewTask( pxTaskCode, pcName, ( uint32_t ) usStackDepth, pvParameters, uxPriority, pxCreatedTask, pxNewTCB, NULL );
+            prvAddNewTaskToReadyList( pxNewTCB );
+            xReturn = pdPASS;
+        }
+        else
+        {
+            xReturn = errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY;
+        }
+
+        return xReturn;
+    }
+
+#endif /* configSUPPORT_DYNAMIC_ALLOCATION */
+/*-----------------------------------------------------------*/
+
 /*-----------------------------------------------------------*/
 
 
@@ -1666,6 +1695,10 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
             /* If null is passed in here then it is the calling task that is
              * being deleted. */
             pxTCB = prvGetTCBFromHandle( xTaskToDelete );
+
+            #if ( configUSE_EDF_SCHEDULER == 1 )
+                vRemoveTCBFromList(pxTCB);
+            #endif /* configUSE_EDF_SCHEDULER */
 
             /* Remove task from the ready/delayed list. */
             if( uxListRemove( &( pxTCB->xStateListItem ) ) == ( UBaseType_t ) 0 )
@@ -3563,18 +3596,6 @@ void vSetPriorityBasedOndeadline( )
 
 }
 
-void vSetEDFTaskWithDeadline()
-{
-    // get best task to run
-    TCB_t *task = tcbGetReadyTCB();
-
-
-
-
-}
-
-
-
 
 
 void vTaskSwitchContext( void )
@@ -3631,11 +3652,14 @@ void vTaskSwitchContext( void )
         /* Select a new task to run using either the generic C or port
          * optimised asm code. */
 
-        /* set priorities based on deadline */
-        vSetPriorityBasedOndeadline();
 
-        //taskSELECT_HIGHEST_PRIORITY_TASK(); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
-        traceTASK_SWITCHED_IN();
+        #if ( configUSE_EDF_SCHEULDER == 1)
+            /* set priorities based on deadline */
+            vSetPriorityBasedOndeadline();
+        #else
+            taskSELECT_HIGHEST_PRIORITY_TASK(); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+            traceTASK_SWITCHED_IN();
+        #endif
 
         /* After the new task is switched in, update the global errno. */
         #if ( configUSE_POSIX_ERRNO == 1 )

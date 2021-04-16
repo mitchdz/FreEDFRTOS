@@ -63,8 +63,9 @@
 /* Local includes. */
 #include "console.h"
 
-#define    BLINKY_DEMO       0
-#define    FULL_DEMO         1
+#define    BLINKY_DEMO                  0
+#define    FULL_DEMO                    1
+#define    CRASHY_MC_SPLODY_DEMO        2
 
 //#define mainSELECTED_APPLICATION BLINKY_DEMO
 #define mainSELECTED_APPLICATION CRASHY_MC_SPLODY_DEMO
@@ -120,6 +121,7 @@ StackType_t uxTimerTaskStack[ configTIMER_TASK_STACK_DEPTH ];
 int main( void )
 {
     console_init();
+
     #if ( mainSELECTED_APPLICATION == BLINKY_DEMO )
     {
         console_print("Starting echo blinky demo\n");
@@ -134,7 +136,8 @@ int main( void )
     {
         console_print("Starting crashy mc splody demo demo\n");
         main_crashy_mc_splody_demo_demo();
-    }   #else
+    }
+    #else
     {
         #error "The selected demo is not valid"
     }

@@ -348,12 +348,24 @@ typedef enum
 
 
 #if ( configUSE_EDF_SCHEDULER == 1 )
+
+    //typedef struct tskTaskControlBlock tskTCB;
+    //typedef tskTCB TCB_t;
+
     BaseType_t xTaskCreateWithDeadline( TaskFunction_t pxTaskCode,
                             const char * const pcName,     /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
                             const configSTACK_DEPTH_TYPE usStackDepth,
                             void * const pvParameters,
                             uint32_t deadline,
                             TaskHandle_t * const pxCreatedTask ) PRIVILEGED_FUNCTION;
+
+    //void vSetEDFTaskWithDeadline();
+    //void vRemoveTCBFromList(TCB_t *tcb);
+    //void vAddTCBToList(TCB_t *tcb);
+    //TCB_t *tcbGetReadyTCB();
+
+
+
 #endif
 
 #if ( configSUPPORT_DYNAMIC_ALLOCATION == 1 )
