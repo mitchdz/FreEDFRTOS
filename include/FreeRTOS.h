@@ -1213,6 +1213,10 @@ typedef struct xSTATIC_TCB
     #if ( configUSE_POSIX_ERRNO == 1 )
         int iDummy22;
     #endif
+    #if ( configUSE_EDF_SCHEDULER == 1 )
+        uint32_t iDummy23;
+    #endif
+
 } StaticTask_t;
 
 /*

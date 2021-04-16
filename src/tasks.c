@@ -331,8 +331,6 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
 
     #if ( configUSE_EDF_SCHEDULER == 1 )
         uint32_t deadline;
-        uint32_t ticksToComplete;
-        uint32_t ticksDone;
     #endif
 } tskTCB;
 
@@ -1130,7 +1128,7 @@ static void prvInitialiseNewTaskWithDeadline( TaskFunction_t pxTaskCode,
     printf("New task %s created with deadline %d from prvInitialiseNewTaskWithDeadline\n",
             pxNewTCB->pcTaskName, udeadline);
 
-    vAddTCBToList(pxNewTCB);
+    // vAddTCBToList(pxNewTCB);
 }
 
 
@@ -3268,7 +3266,7 @@ BaseType_t xTaskCatchUpTicks( TickType_t xTicksToCatchUp )
 
 BaseType_t xTaskIncrementTick( void )
 {
-    printf("entering xTaskIcrementTick\n");
+    //printf("entering xTaskIcrementTick\n");
     TCB_t * pxTCB;
     TickType_t xItemValue;
     BaseType_t xSwitchRequired = pdFALSE;
@@ -3606,7 +3604,7 @@ void vSetPriorityBasedOndeadline( )
 
 void vTaskSwitchContext( void )
 {
-    printf("entered vTaskSwitchContext\n");
+    //printf("entered vTaskSwitchContext\n");
     if( uxSchedulerSuspended != ( UBaseType_t ) pdFALSE )
     {
         /* The scheduler is currently suspended - do not allow a context
