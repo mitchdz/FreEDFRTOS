@@ -331,6 +331,8 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
 
     #if ( configUSE_EDF_SCHEDULER == 1 )
         uint32_t deadline;
+        uint32_t ticksToComplete;
+        uint32_t ticksDone;
     #endif
 } tskTCB;
 
@@ -343,6 +345,15 @@ typedef tskTCB TCB_t;
 /*lint -save -e956 A manual analysis and inspection has been used to determine
  * which static variables must be declared volatile. */
 PRIVILEGED_DATA TCB_t * volatile pxCurrentTCB = NULL;
+
+// in the function that updates current tick
+//pxCurrentTCB->ticksDone++;
+//if (pxCurrentTCB) {
+//    if (pxCurrentTCB->ticksToComplete == ticksDone) {
+//        vTaskDelete(pxCurrentTCB);
+//        vTaskSwitchContext();
+//    }
+//}
 
 
 #if ( configUSE_EDF_SCHEDULER == 1 )
@@ -873,7 +884,7 @@ static void prvInitialiseNewTaskWithDeadline( TaskFunction_t pxTaskCode,
      * it does not matter what priority is set to
      * because priority is not used when scheduling
      * this is simply used so the code is semi-backwards compatible^(tm)*/
-    UBaseType_t uxPriority = tskIDLE_PRIORITY;
+    UBaseType_t uxPriority = tskIDLE_PRIORITY+1;
 
     #if ( portUSING_MPU_WRAPPERS == 1 )
         /* Should the task be created in privileged mode? */
@@ -1116,21 +1127,11 @@ static void prvInitialiseNewTaskWithDeadline( TaskFunction_t pxTaskCode,
         mtCOVERAGE_TEST_MARKER();
     }
 
+    printf("New task %s created with deadline %d from prvInitialiseNewTaskWithDeadline\n",
+            pxNewTCB->pcTaskName, udeadline);
 
     vAddTCBToList(pxNewTCB);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1602,6 +1603,7 @@ static void prvInitialiseNewTask( TaskFunction_t pxTaskCode,
 
 static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
 {
+    printf("Entering prvAddNewTaskToReadyList\n");
     /* Ensure interrupts don't access the task lists while the lists are being
      * updated. */
     taskENTER_CRITICAL();
@@ -1697,6 +1699,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
             pxTCB = prvGetTCBFromHandle( xTaskToDelete );
 
             #if ( configUSE_EDF_SCHEDULER == 1 )
+                printf("Task %s deleted\n", pxTCB->pcTaskName);
                 vRemoveTCBFromList(pxTCB);
             #endif /* configUSE_EDF_SCHEDULER */
 
@@ -2244,6 +2247,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
 
     void vTaskSuspend( TaskHandle_t xTaskToSuspend )
     {
+        printf("Entering vTaskSuspend\n");
         TCB_t * pxTCB;
 
         taskENTER_CRITICAL();
@@ -2525,6 +2529,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
 
 void vTaskStartScheduler( void )
 {
+    printf("Entering vTaskStartScheduler\n");
     BaseType_t xReturn;
 
     /* Add the idle task at the lowest priority. */
@@ -3263,6 +3268,7 @@ BaseType_t xTaskCatchUpTicks( TickType_t xTicksToCatchUp )
 
 BaseType_t xTaskIncrementTick( void )
 {
+    printf("entering xTaskIcrementTick\n");
     TCB_t * pxTCB;
     TickType_t xItemValue;
     BaseType_t xSwitchRequired = pdFALSE;
@@ -3600,6 +3606,7 @@ void vSetPriorityBasedOndeadline( )
 
 void vTaskSwitchContext( void )
 {
+    printf("entered vTaskSwitchContext\n");
     if( uxSchedulerSuspended != ( UBaseType_t ) pdFALSE )
     {
         /* The scheduler is currently suspended - do not allow a context

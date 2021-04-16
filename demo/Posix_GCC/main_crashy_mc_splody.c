@@ -119,6 +119,9 @@ queue send software timer respectively. */
 static void prvQueueReceiveTask( void *pvParameters );
 static void prvQueueSendTask( void *pvParameters );
 
+
+
+
 /*
  * The callback function executed when the software timer expires.
  */
@@ -148,15 +151,20 @@ void main_crashy_mc_splody_demo_demo( void )
         /* Start the two tasks as described in the comments at the top of this
         file. */
         printf("Creating first task from main...\n");
-        xTaskCreateWithDeadline( prvQueueReceiveTask,           /* The function that implements the task. */
-                    "Rx",                           /* The text name assigned to the task - for debug only as it is not used by the kernel. */
-                    configMINIMAL_STACK_SIZE,       /* The size of the stack to allocate to the task. */
-                    (uint32_t) 12,                           /* The parameter passed to the task - not used in this simple case. */
-                    mainQUEUE_RECEIVE_TASK_PRIORITY,/* The priority assigned to the task. */
-                    NULL );                         /* The task handle is not required, so NULL is passed. */
+        xTaskCreateWithDeadline( prvQueueReceiveTask,
+                    "Task1",
+                    configMINIMAL_STACK_SIZE,
+                    NULL, /* pvParams */
+                    (uint32_t) 12,
+                    NULL );
 
         printf("Creating second task from main...\n");
-        xTaskCreateWithDeadline( prvQueueSendTask, "TX", configMINIMAL_STACK_SIZE, (uint32_t) 4, mainQUEUE_SEND_TASK_PRIORITY, NULL );
+        xTaskCreateWithDeadline( prvQueueSendTask,
+                "Task2",
+                configMINIMAL_STACK_SIZE,
+                NULL,
+                (uint32_t) 4,
+                NULL );
 
         /* Create the software timer, but don't start it yet. */
         xTimer = xTimerCreate( "Timer",             /* The text name assigned to the software timer - for debug only as it is not used by the kernel. */
