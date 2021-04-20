@@ -1,0 +1,59 @@
+make posix_demo -f /home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile --dry-run --keep-going --print-directory
+make: Entering directory '/home/mitch/git/FreEDFRTOS'
+ 
+make: *** No rule to make target 'build//home/mitch/portable/MemMang/heap_3.o', needed by 'build/posix_demo'.
+make: *** No rule to make target 'build//home/mitch/portable/ThirdParty/GCC/Posix/utils/wait_for_event.o', needed by 'build/posix_demo'.
+make: *** No rule to make target 'build//home/mitch/portable/ThirdParty/GCC/Posix/port.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/AbortDelay.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/BlockQ.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/blocktim.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/countsem.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/death.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/dynamic.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/EventGroupsDemo.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/flop.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/GenQTest.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/integer.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/IntSemTest.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/MessageBufferAMP.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/MessageBufferDemo.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/PollQ.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/QPeek.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/QueueOverwrite.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/QueueSet.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/QueueSetPolling.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/recmutex.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/semtest.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/StaticAllocation.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/StreamBufferDemo.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/StreamBufferInterrupt.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/TaskNotify.o', needed by 'build/posix_demo'.
+ 
+make: *** No rule to make target 'build//home/mitch/demo/Common/Minimal/TimerDemo.o', needed by 'build/posix_demo'.
+ 
+make: Leaving directory '/home/mitch/git/FreEDFRTOS'
+ 

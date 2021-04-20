@@ -1,0 +1,651 @@
+make all -f /home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile --print-data-base --no-builtin-variables --no-builtin-rules --question
+make: *** No rule to make target 'all'.  Stop.
+ 
+# GNU Make 4.3
+# Built for x86_64-pc-linux-gnu
+# Copyright (C) 1988-2020 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+
+# Make data base, printed on Fri Apr 16 18:40:55 2021
+
+# Variables
+
+# makefile (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 55)
+DEP_FILE = $(OBJ_FILES:%.o=%.d)
+# environment
+VSCODE_INJECT_NODE_MODULE_LOOKUP_PATH = /home/mitch/.vscode-server/bin/3c4e3df9e89829dce27b7b5c24508306b151f30d/remote/node_modules
+# environment
+VSCODE_CWD = /home/mitch
+# default
+MAKE_COMMAND := make
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# makefile (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 48)
+SOURCE_FILES := /home/mitch/portable/MemMang/heap_3.c /home/mitch/portable/ThirdParty/GCC/Posix/utils/wait_for_event.c /home/mitch/portable/ThirdParty/GCC/Posix/port.c /home/mitch/demo/Common/Minimal/AbortDelay.c /home/mitch/demo/Common/Minimal/BlockQ.c /home/mitch/demo/Common/Minimal/blocktim.c /home/mitch/demo/Common/Minimal/countsem.c /home/mitch/demo/Common/Minimal/death.c /home/mitch/demo/Common/Minimal/dynamic.c /home/mitch/demo/Common/Minimal/EventGroupsDemo.c /home/mitch/demo/Common/Minimal/flop.c /home/mitch/demo/Common/Minimal/GenQTest.c /home/mitch/demo/Common/Minimal/integer.c /home/mitch/demo/Common/Minimal/IntSemTest.c /home/mitch/demo/Common/Minimal/MessageBufferAMP.c /home/mitch/demo/Common/Minimal/MessageBufferDemo.c /home/mitch/demo/Common/Minimal/PollQ.c /home/mitch/demo/Common/Minimal/QPeek.c /home/mitch/demo/Common/Minimal/QueueOverwrite.c /home/mitch/demo/Common/Minimal/QueueSet.c /home/mitch/demo/Common/Minimal/QueueSetPolling.c /home/mitch/demo/Common/Minimal/recmutex.c /home/mitch/demo/Common/Minimal/semtest.c /home/mitch/demo/Common/Minimal/StaticAllocation.c /home/mitch/demo/Common/Minimal/StreamBufferDemo.c /home/mitch/demo/Common/Minimal/StreamBufferInterrupt.c /home/mitch/demo/Common/Minimal/TaskNotify.c /home/mitch/demo/Common/Minimal/TimerDemo.c
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# default
+.VARIABLES := 
+# environment
+PWD = /home/mitch/git/FreEDFRTOS
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# environment
+PS1 = \[\033[96m\]\u@\h: \[\033[33m\]\w\[\033[32m\]$(parse_git_branch)\[\033[00m\] \n$ 
+# environment
+XDG_DATA_DIRS = /usr/local/share:/usr/share:/var/lib/snapd/desktop
+# environment
+OLDPWD = /home/mitch/.vscode-server/bin/3c4e3df9e89829dce27b7b5c24508306b151f30d
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# makefile (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 13)
+INCLUDE_DIRS := -I. -I/home/mitch/include -I/home/mitch/portable/ThirdParty/GCC/Posix -I/home/mitch/portable/ThirdParty/GCC/Posix/utils -I/home/mitch/demo/Common/include
+# environment
+VSCODE_LOG_STACK = false
+# automatic
+%F = $(notdir $%)
+# environment
+LANG = C.UTF-8
+# default
+.LOADED := 
+# default
+.INCLUDE_DIRS = /usr/local/include /usr/include /usr/include
+# makefile
+MAKEFLAGS = pqrR
+# makefile
+CURDIR := /home/mitch/git/FreEDFRTOS
+# environment
+VSCODE_PIPE_LOGGING = true
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+# environment
+LESSOPEN = | /usr/bin/lesspipe %s
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+MFLAGS = -pqrR
+# default
+.SHELLFLAGS := -c
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# makefile (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 1)
+MAKEFILE_LIST := /home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile
+# automatic
+@F = $(notdir $@)
+# environment
+VSCODE_VERBOSE_LOGGING = true
+# environment
+XDG_SESSION_TYPE = tty
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# automatic
+*F = $(notdir $*)
+# environment
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# environment
+VSCODE_NLS_CONFIG = {"locale":"en","availableLanguages":{}}
+# default
+MAKE_HOST := x86_64-pc-linux-gnu
+# makefile
+SHELL = /bin/sh
+# default
+MAKECMDGOALS := all
+# environment
+SHLVL = 0
+# environment
+MAKELEVEL := 0
+# default
+MAKE = $(MAKE_COMMAND)
+# environment
+PATH = /home/mitch/.vscode-server/bin/3c4e3df9e89829dce27b7b5c24508306b151f30d/bin:/home/mitch/.vscode-server/bin/3c4e3df9e89829dce27b7b5c24508306b151f30d/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+# default
+MAKEFILES := 
+# environment
+MOTD_SHOWN = pam
+# automatic
+^F = $(notdir $^)
+# makefile (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 7)
+FREERTOS_DIR := /home/mitch
+# makefile (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 53)
+OBJ_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
+# environment
+SSH_CLIENT = 192.168.1.207 52598 22
+# environment
+VSCODE_LOG_NATIVE = false
+ 
+# environment
+LESSCLOSE = /usr/bin/lesspipe %s %s
+# automatic
+?F = $(notdir $?)
+# environment
+LS_COLORS = 
+# automatic
++F = $(notdir $+)
+# 'override' directive
+GNUMAKEFLAGS := 
+# environment
+BROWSER = /home/mitch/.vscode-server/bin/3c4e3df9e89829dce27b7b5c24508306b151f30d/bin/helpers/browser.sh
+# environment
+LOGNAME = mitch
+# makefile
+.DEFAULT_GOAL := posix_demo
+# environment
+EDITOR = vim
+# environment
+USER = mitch
+# default
+MAKE_VERSION := 4.3
+# makefile (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 51)
+LDFLAGS := -ggdb3 -O0 -pthread -lpcap
+# environment
+VSCODE_EXTHOST_WILL_SEND_SOCKET = true
+# environment
+VSCODE_AGENT_FOLDER = /home/mitch/.vscode-server
+# environment
+_ = /home/mitch/.vscode-server/bin/3c4e3df9e89829dce27b7b5c24508306b151f30d/node
+# makefile (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 2)
+BIN := posix_demo
+# environment
+XDG_RUNTIME_DIR = /run/user/1000
+# makefile (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 50)
+CFLAGS := -ggdb3 -O0 -DprojCOVERAGE_TEST=0 -D_WINDOWS_
+# environment
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-7da2bcdf-d4c7-4d12-8ff0-1461bff80ef1.sock
+# environment
+XDG_SESSION_CLASS = user
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/server/remoteExtensionHostProcess
+# makefile (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 4)
+BUILD_DIR := build
+# environment
+HOME = /home/mitch
+# makefile (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 6)
+FREERTOS_DIR_REL := ../..
+ 
+# environment
+XDG_SESSION_ID = 1650
+# default
+.RECIPEPREFIX := 
+# automatic
+<F = $(notdir $<)
+# default
+SUFFIXES := 
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
+# makefile (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 1)
+CC := gcc
+# environment
+SSH_CONNECTION = 192.168.1.207 52598 192.168.1.75 22
+# variable set hash-table stats:
+# Load=83/1024=8%, Rehash=0, Collisions=3/225=1%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# /home/mitch/src: could not be stat'd.
+# . (device 64768, inode 5899054): 9 files, no impossibilities.
+
+ 
+# 9 files, no impossibilities in 2 directories.
+
+# Implicit Rules
+
+build/%.o: %.c
+#  recipe to execute (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 67):
+	-mkdir -p $(@D)
+	$(CC) $(CFLAGS) ${INCLUDE_DIRS} -MMD -c $< -o $@
+
+# 1 implicit rules, 0 (0.0%) terminal.
+# Files
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/recmutex.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/portable/MemMang/heap_3.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+ 
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/EventGroupsDemo.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/IntSemTest.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/integer.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+ 
+# Not a target:
+build//home/mitch/demo/Common/Minimal/StreamBufferDemo.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/death.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/StaticAllocation.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/portable/ThirdParty/GCC/Posix/port.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+ 
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/StreamBufferInterrupt.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/GenQTest.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/IntSemTest.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/BlockQ.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/countsem.o:
+ 
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/AbortDelay.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/portable/ThirdParty/GCC/Posix/utils/wait_for_event.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/TimerDemo.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+ 
+build//home/mitch/demo/Common/Minimal/BlockQ.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+clean:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 73):
+	-rm -rf $(BUILD_DIR)
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/TaskNotify.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/integer.o:
+#  Implicit rule search has not been done.
+ 
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/blocktim.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/QPeek.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+build/posix_demo: build//home/mitch/portable/MemMang/heap_3.o build//home/mitch/portable/ThirdParty/GCC/Posix/utils/wait_for_event.o build//home/mitch/portable/ThirdParty/GCC/Posix/port.o build//home/mitch/demo/Common/Minimal/AbortDelay.o build//home/mitch/demo/Common/Minimal/BlockQ.o build//home/mitch/demo/Common/Minimal/blocktim.o build//home/mitch/demo/Common/Minimal/countsem.o build//home/mitch/demo/Common/Minimal/death.o build//home/mitch/demo/Common/Minimal/dynamic.o build//home/mitch/demo/Common/Minimal/EventGroupsDemo.o build//home/mitch/demo/Common/Minimal/flop.o build//home/mitch/demo/Common/Minimal/GenQTest.o build//home/mitch/demo/Common/Minimal/integer.o build//home/mitch/demo/Common/Minimal/IntSemTest.o build//home/mitch/demo/Common/Minimal/MessageBufferAMP.o build//home/mitch/demo/Common/Minimal/MessageBufferDemo.o build//home/mitch/demo/Common/Minimal/PollQ.o build//home/mitch/demo/Common/Minimal/QPeek.o build//home/mitch/demo/Common/Minimal/QueueOverwrite.o build//home/mitch/demo/Common/Minimal/QueueSet.o build//home/mitch/demo/Common/Minimal/QueueSetPolling.o build//home/mitch/demo/Common/Minimal/recmutex.o build//home/mitch/demo/Common/Minimal/semtest.o build//home/mitch/demo/Common/Minimal/StaticAllocation.o build//home/mitch/demo/Common/Minimal/StreamBufferDemo.o build//home/mitch/demo/Common/Minimal/StreamBufferInterrupt.o build//home/mitch/demo/Common/Minimal/TaskNotify.o build//home/mitch/demo/Common/Minimal/TimerDemo.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from '/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile', line 60):
+	-mkdir -p ${@D}
+	$(CC) $^ $(CFLAGS) $(INCLUDE_DIRS) ${LDFLAGS} -o $@
+ 
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/flop.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+/home/mitch/git/FreEDFRTOS/demo/Posix_GCC/Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2021-04-03 01:38:00.616677705
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/StreamBufferInterrupt.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/portable/MemMang/heap_3.o:
+ 
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/TimerDemo.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/countsem.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/QueueOverwrite.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/dynamic.d:
+#  Implicit rule search has been done.
+ 
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/QueueSetPolling.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/recmutex.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/death.o:
+ 
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+all:
+#  Command line target.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/QueueSetPolling.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/QueueSet.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+ 
+# Not a target:
+build//home/mitch/demo/Common/Minimal/AbortDelay.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/QueueSet.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/MessageBufferDemo.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/MessageBufferAMP.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+ 
+# Not a target:
+build//home/mitch/portable/ThirdParty/GCC/Posix/utils/wait_for_event.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/MessageBufferDemo.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/QPeek.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/TaskNotify.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/portable/ThirdParty/GCC/Posix/port.o:
+#  Implicit rule search has not been done.
+ 
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/PollQ.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/QueueOverwrite.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/flop.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/EventGroupsDemo.o:
+#  Implicit rule search has not been done.
+ 
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/blocktim.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/GenQTest.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+.PHONY: clean
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/StreamBufferDemo.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+ 
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/PollQ.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/semtest.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/dynamic.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/StaticAllocation.o:
+#  Implicit rule search has not been done.
+ 
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/semtest.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+build//home/mitch/demo/Common/Minimal/MessageBufferAMP.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+posix_demo: build/posix_demo
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# files hash-table stats:
+ 
+# Load=64/1024=6%, Rehash=0, Collisions=4/134=3%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 78 / storage = 3131 B / avg = 40 B
+# current buf: size = 8162 B / used = 3131 B / count = 78 / avg = 40 B
+
+# strcache performance: lookups = 116 / hit rate = 32%
+# hash-table stats:
+# Load=78/8192=1%, Rehash=0, Collisions=1/116=1%
+# Finished Make data base on Fri Apr 16 18:40:55 2021
+
+ 

@@ -1140,7 +1140,7 @@ static void prvInitialiseNewTaskWithDeadline( TaskFunction_t pxTaskCode,
                             uint32_t udeadline,
                             TaskHandle_t * const pxCreatedTask)
     {
-        printf("new task with deadline of %d created\n", udeadline);
+        // printf("new task with deadline of %d created\n", udeadline);
 
         TCB_t * pxNewTCB;
         BaseType_t xReturn;
@@ -1601,7 +1601,7 @@ static void prvInitialiseNewTask( TaskFunction_t pxTaskCode,
 
 static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
 {
-    printf("Entering prvAddNewTaskToReadyList\n");
+    // printf("Entering prvAddNewTaskToReadyList\n");
     /* Ensure interrupts don't access the task lists while the lists are being
      * updated. */
     taskENTER_CRITICAL();
@@ -1697,7 +1697,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
             pxTCB = prvGetTCBFromHandle( xTaskToDelete );
 
             #if ( configUSE_EDF_SCHEDULER == 1 )
-                printf("Task %s deleted\n", pxTCB->pcTaskName);
+                // printf("Task %s deleted\n", pxTCB->pcTaskName);
                 vRemoveTCBFromList(pxTCB);
             #endif /* configUSE_EDF_SCHEDULER */
 
@@ -2245,7 +2245,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
 
     void vTaskSuspend( TaskHandle_t xTaskToSuspend )
     {
-        printf("Entering vTaskSuspend\n");
+        // printf("Entering vTaskSuspend\n");
         TCB_t * pxTCB;
 
         taskENTER_CRITICAL();
@@ -2527,7 +2527,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
 
 void vTaskStartScheduler( void )
 {
-    printf("Entering vTaskStartScheduler\n");
+    // printf("Entering vTaskStartScheduler\n");
     BaseType_t xReturn;
 
     /* Add the idle task at the lowest priority. */
@@ -3570,7 +3570,7 @@ BaseType_t xTaskIncrementTick( void )
 
 void vSetPriorityBasedOndeadline( )
 {
-    printf("print from setPriorityBasedOnDeadline\n");
+    // printf("print from setPriorityBasedOnDeadline\n");
     int minDeadline = INT_MAX;
     int maxDeadline = INT_MIN;
 

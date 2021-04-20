@@ -118,6 +118,9 @@ queue send software timer respectively. */
  */
 static void prvQueueReceiveTask( void *pvParameters );
 static void prvQueueSendTask( void *pvParameters );
+static void prvQueueTask1( void *pvParameters );
+static void prvQueueTask2( void *pvParameters );
+
 
 
 
@@ -151,7 +154,7 @@ void main_crashy_mc_splody_demo_demo( void )
         /* Start the two tasks as described in the comments at the top of this
         file. */
         printf("Creating first task from main...\n");
-        xTaskCreateWithDeadline( prvQueueReceiveTask,
+        xTaskCreateWithDeadline( prvQueueTask1,
                     "Task1",
                     configMINIMAL_STACK_SIZE,
                     NULL, /* pvParams */
@@ -180,6 +183,10 @@ void main_crashy_mc_splody_demo_demo( void )
 
         /* Start the tasks and timer running. */
         vTaskStartScheduler();
+
+        // wait for X ticks, then create new task
+
+
     }
 
     /* If all is well, the scheduler will now be running, and the following
@@ -190,6 +197,7 @@ void main_crashy_mc_splody_demo_demo( void )
     for( ;; );
 }
 /*-----------------------------------------------------------*/
+
 
 static void prvQueueSendTask( void *pvParameters )
 {
@@ -263,6 +271,83 @@ uint32_t ulReceivedValue;
         if( ulReceivedValue == mainVALUE_SENT_FROM_TASK )
         {
             console_print( "Message received from task\n" );
+        }
+        else if( ulReceivedValue == mainVALUE_SENT_FROM_TIMER )
+        {
+            console_print( "Message received from software timer\n" );
+        }
+        else
+        {
+            console_print( "Unexpected message\n" );
+        }
+    }
+}
+/*-----------------------------------------------------------*/
+
+static void prvQueueTask2( void *pvParameters )
+{
+uint32_t ulReceivedValue;
+
+    /* Prevent the compiler warning about the unused parameter. */
+    ( void ) pvParameters;
+
+    for( ;; )
+    {
+        /* Wait until something arrives in the queue - this task will block
+        indefinitely provided INCLUDE_vTaskSuspend is set to 1 in
+        FreeRTOSConfig.h.  It will not use any CPU time while it is in the
+        Blocked state. */
+        xQueueReceive( xQueue, &ulReceivedValue, portMAX_DELAY );
+
+        /* To get here something must have been received from the queue, but
+        is it an expected value?  Normally calling printf() from a task is not
+        a good idea.  Here there is lots of stack space and only one task is
+        using console IO so it is ok.  However, note the comments at the top of
+        this file about the risks of making Linux system calls (such as
+        console output) from a FreeRTOS task. */
+        if( ulReceivedValue == mainVALUE_SENT_FROM_TASK )
+        {
+            console_print( "Message received from task\n" );
+            return;
+        }
+        else if( ulReceivedValue == mainVALUE_SENT_FROM_TIMER )
+        {
+            console_print( "Message received from software timer\n" );
+        }
+        else
+        {
+            console_print( "Unexpected message\n" );
+        }
+    }
+}
+
+
+
+static void prvQueueTask1( void *pvParameters )
+{
+uint32_t ulReceivedValue;
+
+    /* Prevent the compiler warning about the unused parameter. */
+    ( void ) pvParameters;
+
+    for( ;; )
+    {
+        /* Wait until something arrives in the queue - this task will block
+        indefinitely provided INCLUDE_vTaskSuspend is set to 1 in
+        FreeRTOSConfig.h.  It will not use any CPU time while it is in the
+        Blocked state. */
+        xQueueReceive( xQueue, &ulReceivedValue, portMAX_DELAY );
+
+        /* To get here something must have been received from the queue, but
+        is it an expected value?  Normally calling printf() from a task is not
+        a good idea.  Here there is lots of stack space and only one task is
+        using console IO so it is ok.  However, note the comments at the top of
+        this file about the risks of making Linux system calls (such as
+        console output) from a FreeRTOS task. */
+        if( ulReceivedValue == mainVALUE_SENT_FROM_TASK )
+        {
+            console_print( "Message received from task\n" );
+            break;
         }
         else if( ulReceivedValue == mainVALUE_SENT_FROM_TIMER )
         {
