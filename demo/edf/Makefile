@@ -47,7 +47,7 @@ SOURCE_FILES += ${FREERTOS_DIR}/demo/Common/Minimal/StreamBufferInterrupt.c
 SOURCE_FILES += ${FREERTOS_DIR}/demo/Common/Minimal/TaskNotify.c
 SOURCE_FILES += ${FREERTOS_DIR}/demo/Common/Minimal/TimerDemo.c
 
-CFLAGS := -ggdb3 -O0 -DprojCOVERAGE_TEST=0 -D_WINDOWS_
+CFLAGS := -DDEBUG -ggdb3 -O0 -DprojCOVERAGE_TEST=0 -D_WINDOWS_
 LDFLAGS := -ggdb3 -O0 -pthread -lpcap
 
 OBJ_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
